@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package grpcapi;
+
+option go_package = "github.com/Krunis/summary-aggregation/packages/grpcapi;grpcapi";
+
+//
+service AggregatorService {
+    //
+    rpc GetUserSummary(UserSummaryRequest) returns (UserSummaryResponse);
+    //
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+message UserSummaryRequest {
+    string username = 1;
+    string user_summary_name = 2;
+}
+
+message UserSummaryResponse {
+    string po = 1;
+}
+
+message HealthCheckRequest{
+    string username = 1;
+}
+
+message HealthCheckResponse{
+    string lo = 1;
+}
