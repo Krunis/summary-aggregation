@@ -13,11 +13,9 @@ import (
 )
 
 const (
-	RateExampleKey = "rate:user:"
-	CacheExampleKey = "cache:list:"
-	CacheListLengthPrefix = ":length"
-	CacheListContentPrefix = ":content"
-	BanExampleKey = "ban:user:"
+	SummaryUserExampleKey = "summary:user:"
+	SummaryIDPrefix = ":id"
+	SummaryLightTypePrefix = ":lighttype"
 )
 
 type CacheData struct{

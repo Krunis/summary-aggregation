@@ -3,7 +3,6 @@ module github.com/Krunis/summary-aggregation
 go 1.25.3
 
 require (
-	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/redis/go-redis/v9 v9.17.3
 	google.golang.org/grpc v1.79.1

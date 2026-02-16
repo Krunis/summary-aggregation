@@ -18,7 +18,12 @@ message UserSummaryRequest {
 }
 
 message UserSummaryResponse {
-    string po = 1;
+    string user_summary_name = 1;
+    string id = 2;
+    string light_type = 3;
+    string date = 4;
+    string color = 5;
+
 }
 
 message HealthCheckRequest{
@@ -26,5 +31,6 @@ message HealthCheckRequest{
 }
 
 message HealthCheckResponse{
-    string lo = 1;
+    string health_db = 1;
+    string health_other_service = 2;
 }

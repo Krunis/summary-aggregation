@@ -74,10 +74,14 @@ func (x *UserSummaryRequest) GetUserSummaryName() string {
 }
 
 type UserSummaryResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Po            string                 `protobuf:"bytes,1,opt,name=po,proto3" json:"po,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	UserSummaryName string                 `protobuf:"bytes,1,opt,name=user_summary_name,json=userSummaryName,proto3" json:"user_summary_name,omitempty"`
+	Id              string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	LightType       string                 `protobuf:"bytes,3,opt,name=light_type,json=lightType,proto3" json:"light_type,omitempty"`
+	Date            string                 `protobuf:"bytes,4,opt,name=date,proto3" json:"date,omitempty"`
+	Color           string                 `protobuf:"bytes,5,opt,name=color,proto3" json:"color,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *UserSummaryResponse) Reset() {
@@ -110,9 +114,133 @@ func (*UserSummaryResponse) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UserSummaryResponse) GetPo() string {
+func (x *UserSummaryResponse) GetUserSummaryName() string {
 	if x != nil {
-		return x.Po
+		return x.UserSummaryName
+	}
+	return ""
+}
+
+func (x *UserSummaryResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UserSummaryResponse) GetLightType() string {
+	if x != nil {
+		return x.LightType
+	}
+	return ""
+}
+
+func (x *UserSummaryResponse) GetDate() string {
+	if x != nil {
+		return x.Date
+	}
+	return ""
+}
+
+func (x *UserSummaryResponse) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+type HealthCheckRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HealthCheckRequest) Reset() {
+	*x = HealthCheckRequest{}
+	mi := &file_api_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealthCheckRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckRequest) ProtoMessage() {}
+
+func (x *HealthCheckRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckRequest.ProtoReflect.Descriptor instead.
+func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *HealthCheckRequest) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type HealthCheckResponse struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	HealthDb           string                 `protobuf:"bytes,1,opt,name=health_db,json=healthDb,proto3" json:"health_db,omitempty"`
+	HealthOtherService string                 `protobuf:"bytes,2,opt,name=health_other_service,json=healthOtherService,proto3" json:"health_other_service,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *HealthCheckResponse) Reset() {
+	*x = HealthCheckResponse{}
+	mi := &file_api_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealthCheckResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckResponse) ProtoMessage() {}
+
+func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
+func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *HealthCheckResponse) GetHealthDb() string {
+	if x != nil {
+		return x.HealthDb
+	}
+	return ""
+}
+
+func (x *HealthCheckResponse) GetHealthOtherService() string {
+	if x != nil {
+		return x.HealthOtherService
 	}
 	return ""
 }
@@ -124,11 +252,22 @@ const file_api_proto_rawDesc = "" +
 	"\tapi.proto\x12\agrpcapi\"\\\n" +
 	"\x12UserSummaryRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12*\n" +
-	"\x11user_summary_name\x18\x02 \x01(\tR\x0fuserSummaryName\"%\n" +
-	"\x13UserSummaryResponse\x12\x0e\n" +
-	"\x02po\x18\x01 \x01(\tR\x02po2`\n" +
+	"\x11user_summary_name\x18\x02 \x01(\tR\x0fuserSummaryName\"\x9a\x01\n" +
+	"\x13UserSummaryResponse\x12*\n" +
+	"\x11user_summary_name\x18\x01 \x01(\tR\x0fuserSummaryName\x12\x0e\n" +
+	"\x02id\x18\x02 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"light_type\x18\x03 \x01(\tR\tlightType\x12\x12\n" +
+	"\x04date\x18\x04 \x01(\tR\x04date\x12\x14\n" +
+	"\x05color\x18\x05 \x01(\tR\x05color\"0\n" +
+	"\x12HealthCheckRequest\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\"d\n" +
+	"\x13HealthCheckResponse\x12\x1b\n" +
+	"\thealth_db\x18\x01 \x01(\tR\bhealthDb\x120\n" +
+	"\x14health_other_service\x18\x02 \x01(\tR\x12healthOtherService2\xaa\x01\n" +
 	"\x11AggregatorService\x12K\n" +
-	"\x0eGetUserSummary\x12\x1b.grpcapi.UserSummaryRequest\x1a\x1c.grpcapi.UserSummaryResponseB@Z>github.com/Krunis/summary-aggregation/packages/grpcapi;grpcapib\x06proto3"
+	"\x0eGetUserSummary\x12\x1b.grpcapi.UserSummaryRequest\x1a\x1c.grpcapi.UserSummaryResponse\x12H\n" +
+	"\vHealthCheck\x12\x1b.grpcapi.HealthCheckRequest\x1a\x1c.grpcapi.HealthCheckResponseB@Z>github.com/Krunis/summary-aggregation/packages/grpcapi;grpcapib\x06proto3"
 
 var (
 	file_api_proto_rawDescOnce sync.Once
@@ -142,16 +281,20 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_proto_goTypes = []any{
 	(*UserSummaryRequest)(nil),  // 0: grpcapi.UserSummaryRequest
 	(*UserSummaryResponse)(nil), // 1: grpcapi.UserSummaryResponse
+	(*HealthCheckRequest)(nil),  // 2: grpcapi.HealthCheckRequest
+	(*HealthCheckResponse)(nil), // 3: grpcapi.HealthCheckResponse
 }
 var file_api_proto_depIdxs = []int32{
 	0, // 0: grpcapi.AggregatorService.GetUserSummary:input_type -> grpcapi.UserSummaryRequest
-	1, // 1: grpcapi.AggregatorService.GetUserSummary:output_type -> grpcapi.UserSummaryResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: grpcapi.AggregatorService.HealthCheck:input_type -> grpcapi.HealthCheckRequest
+	1, // 2: grpcapi.AggregatorService.GetUserSummary:output_type -> grpcapi.UserSummaryResponse
+	3, // 3: grpcapi.AggregatorService.HealthCheck:output_type -> grpcapi.HealthCheckResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -168,7 +311,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_rawDesc), len(file_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

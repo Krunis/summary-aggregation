@@ -20,13 +20,17 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AggregatorService_GetUserSummary_FullMethodName = "/grpcapi.AggregatorService/GetUserSummary"
+	AggregatorService_HealthCheck_FullMethodName    = "/grpcapi.AggregatorService/HealthCheck"
 )
 
 // AggregatorServiceClient is the client API for AggregatorService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AggregatorServiceClient interface {
+	//
 	GetUserSummary(ctx context.Context, in *UserSummaryRequest, opts ...grpc.CallOption) (*UserSummaryResponse, error)
+	//
+	HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 }
 
 type aggregatorServiceClient struct {
@@ -47,11 +51,24 @@ func (c *aggregatorServiceClient) GetUserSummary(ctx context.Context, in *UserSu
 	return out, nil
 }
 
+func (c *aggregatorServiceClient) HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, AggregatorService_HealthCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AggregatorServiceServer is the server API for AggregatorService service.
 // All implementations must embed UnimplementedAggregatorServiceServer
 // for forward compatibility.
 type AggregatorServiceServer interface {
+	//
 	GetUserSummary(context.Context, *UserSummaryRequest) (*UserSummaryResponse, error)
+	//
+	HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 	mustEmbedUnimplementedAggregatorServiceServer()
 }
 
@@ -64,6 +81,9 @@ type UnimplementedAggregatorServiceServer struct{}
 
 func (UnimplementedAggregatorServiceServer) GetUserSummary(context.Context, *UserSummaryRequest) (*UserSummaryResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserSummary not implemented")
+}
+func (UnimplementedAggregatorServiceServer) HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedAggregatorServiceServer) mustEmbedUnimplementedAggregatorServiceServer() {}
 func (UnimplementedAggregatorServiceServer) testEmbeddedByValue()                           {}
@@ -104,6 +124,24 @@ func _AggregatorService_GetUserSummary_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AggregatorService_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AggregatorServiceServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AggregatorService_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AggregatorServiceServer).HealthCheck(ctx, req.(*HealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AggregatorService_ServiceDesc is the grpc.ServiceDesc for AggregatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +152,10 @@ var AggregatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserSummary",
 			Handler:    _AggregatorService_GetUserSummary_Handler,
+		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _AggregatorService_HealthCheck_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

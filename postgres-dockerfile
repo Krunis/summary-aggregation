@@ -1,0 +1,5 @@
+FROM postgres:16.1
+
+WORKDIR /app
+
+COPY packages/sql/setup.sql /docker-entrypoint-initdb.d/

@@ -11,3 +11,27 @@ services:
       - ./packages/grpcapi/buf.gen.yaml:/app/packages/grpcapi/buf.gen.yaml
     command: [ "generate" ]
     profiles: [ "tools" ]
+  postgres:
+    build:
+      context: .
+      dockerfile: postgres-dockerfile
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    volumes:
+      - ./redisdata:/data
+    command: >
+      sh -c '
+        mkdir -p /usr/local/etc/redis &&
+        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
+        redis-server /usr/local/etc/redis/redis.conf
+      '

@@ -119,7 +119,7 @@ func (as *AggregationServerService) connectToAggregator() error {
 }
 
 func (as *AggregationServerService) UserSummaryHandler(w http.ResponseWriter, r *http.Request) {
-
+	
 }
 
 func (as *AggregationServerService) AggregationHealthHandler(w http.ResponseWriter, r *http.Request) {
