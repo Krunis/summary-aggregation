@@ -66,7 +66,7 @@ func (as *AggregatorService) Start(postgresConnectionString string) error {
 	}
 
 	if err := as.RunServer(); err != nil {
-		log.Printf("Error while running %s", err)
+		log.Printf("Stop running error: %s", err)
 	}
 
 	return as.Stop()

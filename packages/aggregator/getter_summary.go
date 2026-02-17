@@ -3,6 +3,7 @@ package aggregator
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -14,9 +15,13 @@ import (
 )
 
 func (sr *PostgresSummaryRepository) GetField(ctx context.Context, username, field string) (string, error) {
-	row := sr.DBPool.QueryRow(ctx, `SELECT $1
-									FROM summary
-									WHERE username = $2`, field, username)
+	log.Println("From postgres")
+
+	query := fmt.Sprintf(`SELECT %s
+					      FROM summary
+					      WHERE username = $1`, field)
+
+	row := sr.DBPool.QueryRow(ctx, query, username)
 
 	var value string
 
@@ -31,6 +36,8 @@ func (sr *PostgresSummaryRepository) GetField(ctx context.Context, username, fie
 }
 
 func (as *AggregatorService) GetFromCache(ctx context.Context, key string) (string, error) {
+	log.Println("From cache")
+
 	id, err := as.RedisDB.Get(ctx, key).Result()
 	if err != nil {
 		if err == redis.Nil {
@@ -45,6 +52,8 @@ func (as *AggregatorService) GetFromCache(ctx context.Context, key string) (stri
 
 func (as *AggregatorService) GetFromDB(ctx context.Context, username string) (*pb.DBSummary, error) {
 	keyID := common.SummaryUserExampleKey + username + common.SummaryIDPrefix
+
+	log.Println("Begin from DB")
 
 	id, err := as.GetFromCache(ctx, keyID)
 	if err != nil {
@@ -71,13 +80,13 @@ func (as *AggregatorService) GetFromDB(ctx context.Context, username string) (*p
 	if err != nil {
 		log.Printf("Failed to get light type from cache: %s", err)
 
-		id, err = as.DBRepo.GetField(ctx, username, "light_type")
+		lightType, err = as.DBRepo.GetField(ctx, username, "light_type")
 		if err != nil {
 			log.Printf("Failed to get light type from postgres: %s", err)
 		}
 
 		go func() {
-			ctxSend, cancel := context.WithTimeout(context.Background(), time.Millisecond*250)
+			ctxSend, cancel := context.WithTimeout(context.Background(), time.Millisecond*60)
 			defer cancel()
 
 			if err := as.SendInCache(ctxSend, keyLightType, lightType); err != nil {
@@ -95,6 +104,8 @@ func (as *AggregatorService) SendInCache(ctx context.Context, key, value string)
 	if err != nil {
 		return err
 	}
+
+	log.Println("Sent in cache")
 
 	return nil
 }

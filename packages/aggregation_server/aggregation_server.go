@@ -2,6 +2,7 @@ package aggreagationserver
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -55,6 +56,8 @@ func NewAggregationServerService(serverPort string) *AggregationServerService {
 }
 
 func (as *AggregationServerService) Start(aggregatorAddress string) error {
+	as.aggregatorAddress = aggregatorAddress
+
 	if err := as.connectToAggregator(); err != nil {
 		return err
 	}
@@ -67,10 +70,8 @@ func (as *AggregationServerService) Start(aggregatorAddress string) error {
 	as.httpServer.Addr = as.port
 	as.httpServer.Handler = as.mux
 
-	as.aggregatorAddress = aggregatorAddress
-
 	if err := as.RunHTTPServer(); err != nil {
-		log.Printf("Stop running: %s", err)
+		log.Printf("Stop running error: %s", err)
 	}
 
 	return as.Stop()
@@ -119,11 +120,59 @@ func (as *AggregationServerService) connectToAggregator() error {
 }
 
 func (as *AggregationServerService) UserSummaryHandler(w http.ResponseWriter, r *http.Request) {
-	
+	select{
+	case <-as.Lifecycle.Ctx.Done():
+		log.Println("Request cancelled (shutdown or client disconnected)")
+		return
+	default:
+		if r.Method != "POST"{
+			http.Error(w, "Only POST method is allowed", http.StatusBadRequest)
+			return
+		}
+
+		summReq := &pb.UserSummaryRequest{}
+
+		err := json.NewDecoder(r.Body).Decode(&summReq)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		log.Printf("Received request: %v\n", summReq)
+
+		if err := ValidateSummReq(summReq); err != nil{
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		ctx, cancel := context.WithTimeout(r.Context(), time.Millisecond * 300)
+		defer cancel()
+
+		resp, err := as.grpcClient.GetUserSummary(ctx, summReq)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if resp == nil{
+			http.Error(w, "undefined", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		err = json.NewEncoder(w).Encode(resp)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+
+	}
 }
 
 func (as *AggregationServerService) AggregationHealthHandler(w http.ResponseWriter, r *http.Request) {
-
+	return
 }
 
 func (as *AggregationServerService) Stop() error {

@@ -14,7 +14,7 @@ func main() {
 	as := aggreagationserver.NewAggregationServerService(port)
 
 	if err := as.Start(aggreagatorAddress); err != nil{
-		log.Printf("Error while stopping: %s", err)
+		log.Printf("Error while working: %s", err)
 	}
 
 }
