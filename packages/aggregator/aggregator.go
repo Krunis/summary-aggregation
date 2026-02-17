@@ -13,7 +13,6 @@ import (
 
 	"github.com/Krunis/summary-aggregation/packages/common"
 	pb "github.com/Krunis/summary-aggregation/packages/grpcapi"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
 )
@@ -26,7 +25,7 @@ type AggregatorService struct {
 	grpcServer *grpc.Server
 	lis        net.Listener
 
-	DBPool *pgxpool.Pool
+	DBRepo SummaryRepository
 
 	RedisDB *redis.Client
 
@@ -54,10 +53,12 @@ func NewAggregatorService(aggregatorPort string) *AggregatorService {
 func (as *AggregatorService) Start(postgresConnectionString string) error {
 	var err error
 
-	as.DBPool, err = common.ConnectToPostgres(as.Lifecycle.Ctx, postgresConnectionString)
+	pool, err := common.ConnectToPostgres(as.Lifecycle.Ctx, postgresConnectionString)
 	if err != nil {
 		return err
 	}
+	
+	as.DBRepo = &PostgresSummaryRepository{DBPool: pool}
 
 	as.RedisDB, err = common.ConnectToRedis(as.Lifecycle.Ctx)
 	if err != nil {
@@ -122,12 +123,24 @@ func (as *AggregatorService) GetUserSummary(ctx context.Context, req *pb.UserSum
 	case <-as.Lifecycle.Ctx.Done():
 		return nil, as.Lifecycle.Ctx.Err()
 	default:
-		summ, err := as.GetFromRedis(ctx, req.GetUserSummaryName())
+		var err error
+
+		resp := &pb.UserSummaryResponse{}
+
+		usersumm := req.GetUserSummaryName()
+		resp.UserSummaryName = usersumm
+
+		resp.DbSummary, err = as.GetFromDB(ctx, usersumm)
 		if err != nil{
-			log.Printf("Redis unavailable: %s", err)
+			log.Printf("Failed to get from DB: %s", err)
 		}
 
+		resp.ServiceSummmary, err = as.GetFromService(ctx, usersumm)
+		if err != nil{
+			log.Printf("Failed to get from service: %s", err)
+		}
 
+		return resp, nil
 	}
 }
 
@@ -153,8 +166,8 @@ func (as *AggregatorService) Stop() error {
 			as.grpcServer.GracefulStop()
 		}
 
-		if as.DBPool != nil {
-			as.DBPool.Close()
+		if as.DBRepo != nil {
+			as.DBRepo.Close()
 		}
 
 		if as.RedisDB != nil {
