@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/Krunis/summary-aggregation/packages/common"
 	pb "github.com/Krunis/summary-aggregation/packages/grpcapi"
@@ -142,6 +143,42 @@ func (as *AggregatorService) GetUserSummary(ctx context.Context, req *pb.UserSum
 
 		return resp, nil
 	}
+}
+
+func (as *AggregatorService) HealthCheck(ctx context.Context, req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error){
+	log.Printf("%s doing health check...", req.GetUsername())
+
+	resp := &pb.HealthCheckResponse{
+		HealthDb: &pb.HealthDB{},
+	}
+
+	ctxRedis, cancel := context.WithTimeout(ctx, time.Millisecond * 500)
+	defer cancel()
+
+	err := as.RedisDB.Ping(ctxRedis).Err()
+	if err != nil{
+		log.Printf("Health redis error: %s", err)
+		resp.HealthDb.RedisHealth = false
+	}else{
+		resp.HealthDb.RedisHealth = true
+	}
+
+	ctxPostgres, cancel := context.WithTimeout(ctx, time.Millisecond * 500)
+	defer cancel()
+
+	err = as.DBRepo.healthLook(ctxPostgres)
+	if err != nil{
+		log.Printf("Health postgres error: %s", err)
+		resp.HealthDb.PostgresHealth = false
+	}else{
+		resp.HealthDb.PostgresHealth = true
+	}
+
+	if true{
+		resp.HealthOtherService = true
+	}
+
+	return resp, nil
 }
 
 func (as *AggregatorService) Stop() error {

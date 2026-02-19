@@ -15,7 +15,9 @@ import (
 
 	pb "github.com/Krunis/summary-aggregation/packages/grpcapi"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 type AggregationServerService struct {
@@ -36,6 +38,16 @@ type AggregationServerService struct {
 	}
 
 	stopOnce sync.Once
+}
+
+type DBHealth struct{ 
+		Redis_Health bool `json:"redis_health"`
+		Postgres_Health bool `json:"postgres_health"`
+	}
+
+type HealthResp struct{
+	DB_Health DBHealth `json:"db_health"`
+	Other_Service_Health bool `json:"other_service_health"`
 }
 
 func NewAggregationServerService(serverPort string) *AggregationServerService {
@@ -62,8 +74,8 @@ func (as *AggregationServerService) Start(aggregatorAddress string) error {
 		return err
 	}
 
-	as.mux.HandleFunc("/user-summary", as.UserSummaryHandler)
-	as.mux.HandleFunc("/aggregation-health", as.AggregationHealthHandler)
+	as.mux.HandleFunc("/summary", as.UserSummaryHandler)
+	as.mux.HandleFunc("/live", as.AggregationHealthHandler)
 
 	as.httpServer = &http.Server{}
 
@@ -120,40 +132,40 @@ func (as *AggregationServerService) connectToAggregator() error {
 }
 
 func (as *AggregationServerService) UserSummaryHandler(w http.ResponseWriter, r *http.Request) {
-	select{
+	select {
 	case <-as.Lifecycle.Ctx.Done():
 		log.Println("Request cancelled (shutdown or client disconnected)")
 		return
 	default:
-		if r.Method != "POST"{
-			http.Error(w, "Only POST method is allowed", http.StatusBadRequest)
+		if r.Method != "POST" {
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 			return
 		}
 
 		summReq := &pb.UserSummaryRequest{}
 
 		err := json.NewDecoder(r.Body).Decode(&summReq)
-		if err != nil{
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		log.Printf("Received request: %v\n", summReq)
 
-		if err := ValidateSummReq(summReq); err != nil{
+		if err := ValidateSummReq(summReq); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		ctx, cancel := context.WithTimeout(r.Context(), time.Millisecond * 300)
+		ctx, cancel := context.WithTimeout(r.Context(), time.Millisecond*300)
 		defer cancel()
 
 		resp, err := as.grpcClient.GetUserSummary(ctx, summReq)
-		if err != nil{
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if resp == nil{
+		if resp == nil {
 			http.Error(w, "undefined", http.StatusNotFound)
 			return
 		}
@@ -162,17 +174,56 @@ func (as *AggregationServerService) UserSummaryHandler(w http.ResponseWriter, r 
 		w.WriteHeader(http.StatusOK)
 
 		err = json.NewEncoder(w).Encode(resp)
-		if err != nil{
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 
 	}
 }
 
 func (as *AggregationServerService) AggregationHealthHandler(w http.ResponseWriter, r *http.Request) {
-	return
+	select {
+	case <-as.Lifecycle.Ctx.Done():
+		log.Println("Request cancelled (shutdown or client disconnected)")
+		return
+	default:
+		if r.Method != "GET" {
+			http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second * 20)
+		defer cancel()
+
+		health, err := as.grpcClient.HealthCheck(ctx, &pb.HealthCheckRequest{Username: r.Header.Get("X-User-Name")})
+		if err != nil{
+			st, ok := status.FromError(err)
+			if ok{
+				if st.Code() == codes.Unavailable{
+					http.Error(w, "aggreagator offline", http.StatusServiceUnavailable)
+					return
+				}	
+			}
+		}
+
+		log.Printf("%v", health)
+
+		resp := HealthResp{
+			DB_Health: DBHealth{Redis_Health: health.HealthDb.RedisHealth, 
+				Postgres_Health: health.HealthDb.PostgresHealth},
+			Other_Service_Health: health.HealthOtherService,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		err = json.NewEncoder(w).Encode(resp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 }
 
 func (as *AggregationServerService) Stop() error {
@@ -207,7 +258,7 @@ func (as *AggregationServerService) Stop() error {
 
 		if as.grpcConn != nil {
 			if err := as.grpcConn.Close(); err != nil {
-				
+
 			}
 		}
 		if len(errs) > 0 {

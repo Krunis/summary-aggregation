@@ -8,6 +8,7 @@ import (
 
 type SummaryRepository interface {
 	GetField(context.Context, string, string) (string, error)
+	healthLook(context.Context) error
 	Close()
 }
 

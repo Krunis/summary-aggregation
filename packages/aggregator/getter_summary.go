@@ -14,6 +14,10 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+func (sr *PostgresSummaryRepository) healthLook(ctx context.Context) error{
+	return sr.DBPool.Ping(ctx)
+}
+
 func (sr *PostgresSummaryRepository) GetField(ctx context.Context, username, field string) (string, error) {
 	log.Println("From postgres")
 

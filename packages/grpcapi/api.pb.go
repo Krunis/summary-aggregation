@@ -22,6 +22,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type HealthDB struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RedisHealth    bool                   `protobuf:"varint,1,opt,name=redis_health,json=redisHealth,proto3" json:"redis_health,omitempty"`
+	PostgresHealth bool                   `protobuf:"varint,2,opt,name=postgres_health,json=postgresHealth,proto3" json:"postgres_health,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *HealthDB) Reset() {
+	*x = HealthDB{}
+	mi := &file_api_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealthDB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthDB) ProtoMessage() {}
+
+func (x *HealthDB) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthDB.ProtoReflect.Descriptor instead.
+func (*HealthDB) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *HealthDB) GetRedisHealth() bool {
+	if x != nil {
+		return x.RedisHealth
+	}
+	return false
+}
+
+func (x *HealthDB) GetPostgresHealth() bool {
+	if x != nil {
+		return x.PostgresHealth
+	}
+	return false
+}
+
 type DBSummary struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -32,7 +84,7 @@ type DBSummary struct {
 
 func (x *DBSummary) Reset() {
 	*x = DBSummary{}
-	mi := &file_api_proto_msgTypes[0]
+	mi := &file_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +96,7 @@ func (x *DBSummary) String() string {
 func (*DBSummary) ProtoMessage() {}
 
 func (x *DBSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[0]
+	mi := &file_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +109,7 @@ func (x *DBSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DBSummary.ProtoReflect.Descriptor instead.
 func (*DBSummary) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{0}
+	return file_api_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *DBSummary) GetId() string {
@@ -84,7 +136,7 @@ type ServiceSummary struct {
 
 func (x *ServiceSummary) Reset() {
 	*x = ServiceSummary{}
-	mi := &file_api_proto_msgTypes[1]
+	mi := &file_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -96,7 +148,7 @@ func (x *ServiceSummary) String() string {
 func (*ServiceSummary) ProtoMessage() {}
 
 func (x *ServiceSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[1]
+	mi := &file_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +161,7 @@ func (x *ServiceSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceSummary.ProtoReflect.Descriptor instead.
 func (*ServiceSummary) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{1}
+	return file_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ServiceSummary) GetTime() *timestamppb.Timestamp {
@@ -136,7 +188,7 @@ type UserSummaryRequest struct {
 
 func (x *UserSummaryRequest) Reset() {
 	*x = UserSummaryRequest{}
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -148,7 +200,7 @@ func (x *UserSummaryRequest) String() string {
 func (*UserSummaryRequest) ProtoMessage() {}
 
 func (x *UserSummaryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -161,7 +213,7 @@ func (x *UserSummaryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserSummaryRequest.ProtoReflect.Descriptor instead.
 func (*UserSummaryRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UserSummaryRequest) GetUsername() string {
@@ -189,7 +241,7 @@ type UserSummaryResponse struct {
 
 func (x *UserSummaryResponse) Reset() {
 	*x = UserSummaryResponse{}
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -201,7 +253,7 @@ func (x *UserSummaryResponse) String() string {
 func (*UserSummaryResponse) ProtoMessage() {}
 
 func (x *UserSummaryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -214,7 +266,7 @@ func (x *UserSummaryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserSummaryResponse.ProtoReflect.Descriptor instead.
 func (*UserSummaryResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UserSummaryResponse) GetUserSummaryName() string {
@@ -247,7 +299,7 @@ type HealthCheckRequest struct {
 
 func (x *HealthCheckRequest) Reset() {
 	*x = HealthCheckRequest{}
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -259,7 +311,7 @@ func (x *HealthCheckRequest) String() string {
 func (*HealthCheckRequest) ProtoMessage() {}
 
 func (x *HealthCheckRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +324,7 @@ func (x *HealthCheckRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthCheckRequest.ProtoReflect.Descriptor instead.
 func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *HealthCheckRequest) GetUsername() string {
@@ -284,15 +336,15 @@ func (x *HealthCheckRequest) GetUsername() string {
 
 type HealthCheckResponse struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
-	HealthDb           string                 `protobuf:"bytes,1,opt,name=health_db,json=healthDb,proto3" json:"health_db,omitempty"`
-	HealthOtherService string                 `protobuf:"bytes,2,opt,name=health_other_service,json=healthOtherService,proto3" json:"health_other_service,omitempty"`
+	HealthDb           *HealthDB              `protobuf:"bytes,1,opt,name=health_db,json=healthDb,proto3" json:"health_db,omitempty"`
+	HealthOtherService bool                   `protobuf:"varint,2,opt,name=health_other_service,json=healthOtherService,proto3" json:"health_other_service,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
 
 func (x *HealthCheckResponse) Reset() {
 	*x = HealthCheckResponse{}
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -304,7 +356,7 @@ func (x *HealthCheckResponse) String() string {
 func (*HealthCheckResponse) ProtoMessage() {}
 
 func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -317,28 +369,31 @@ func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
 func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{5}
+	return file_api_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *HealthCheckResponse) GetHealthDb() string {
+func (x *HealthCheckResponse) GetHealthDb() *HealthDB {
 	if x != nil {
 		return x.HealthDb
 	}
-	return ""
+	return nil
 }
 
-func (x *HealthCheckResponse) GetHealthOtherService() string {
+func (x *HealthCheckResponse) GetHealthOtherService() bool {
 	if x != nil {
 		return x.HealthOtherService
 	}
-	return ""
+	return false
 }
 
 var File_api_proto protoreflect.FileDescriptor
 
 const file_api_proto_rawDesc = "" +
 	"\n" +
-	"\tapi.proto\x12\agrpcapi\x1a\x1fgoogle/protobuf/timestamp.proto\":\n" +
+	"\tapi.proto\x12\agrpcapi\x1a\x1fgoogle/protobuf/timestamp.proto\"V\n" +
+	"\bHealthDB\x12!\n" +
+	"\fredis_health\x18\x01 \x01(\bR\vredisHealth\x12'\n" +
+	"\x0fpostgres_health\x18\x02 \x01(\bR\x0epostgresHealth\":\n" +
 	"\tDBSummary\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
@@ -355,10 +410,10 @@ const file_api_proto_rawDesc = "" +
 	"db_summary\x18\x02 \x01(\v2\x12.grpcapi.DBSummaryR\tdbSummary\x12B\n" +
 	"\x10service_summmary\x18\x03 \x01(\v2\x17.grpcapi.ServiceSummaryR\x0fserviceSummmary\"0\n" +
 	"\x12HealthCheckRequest\x12\x1a\n" +
-	"\busername\x18\x01 \x01(\tR\busername\"d\n" +
-	"\x13HealthCheckResponse\x12\x1b\n" +
-	"\thealth_db\x18\x01 \x01(\tR\bhealthDb\x120\n" +
-	"\x14health_other_service\x18\x02 \x01(\tR\x12healthOtherService2\xaa\x01\n" +
+	"\busername\x18\x01 \x01(\tR\busername\"w\n" +
+	"\x13HealthCheckResponse\x12.\n" +
+	"\thealth_db\x18\x01 \x01(\v2\x11.grpcapi.HealthDBR\bhealthDb\x120\n" +
+	"\x14health_other_service\x18\x02 \x01(\bR\x12healthOtherService2\xaa\x01\n" +
 	"\x11AggregatorService\x12K\n" +
 	"\x0eGetUserSummary\x12\x1b.grpcapi.UserSummaryRequest\x1a\x1c.grpcapi.UserSummaryResponse\x12H\n" +
 	"\vHealthCheck\x12\x1b.grpcapi.HealthCheckRequest\x1a\x1c.grpcapi.HealthCheckResponseB@Z>github.com/Krunis/summary-aggregation/packages/grpcapi;grpcapib\x06proto3"
@@ -375,29 +430,31 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_proto_goTypes = []any{
-	(*DBSummary)(nil),             // 0: grpcapi.DBSummary
-	(*ServiceSummary)(nil),        // 1: grpcapi.ServiceSummary
-	(*UserSummaryRequest)(nil),    // 2: grpcapi.UserSummaryRequest
-	(*UserSummaryResponse)(nil),   // 3: grpcapi.UserSummaryResponse
-	(*HealthCheckRequest)(nil),    // 4: grpcapi.HealthCheckRequest
-	(*HealthCheckResponse)(nil),   // 5: grpcapi.HealthCheckResponse
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
+	(*HealthDB)(nil),              // 0: grpcapi.HealthDB
+	(*DBSummary)(nil),             // 1: grpcapi.DBSummary
+	(*ServiceSummary)(nil),        // 2: grpcapi.ServiceSummary
+	(*UserSummaryRequest)(nil),    // 3: grpcapi.UserSummaryRequest
+	(*UserSummaryResponse)(nil),   // 4: grpcapi.UserSummaryResponse
+	(*HealthCheckRequest)(nil),    // 5: grpcapi.HealthCheckRequest
+	(*HealthCheckResponse)(nil),   // 6: grpcapi.HealthCheckResponse
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
 }
 var file_api_proto_depIdxs = []int32{
-	6, // 0: grpcapi.ServiceSummary.time:type_name -> google.protobuf.Timestamp
-	0, // 1: grpcapi.UserSummaryResponse.db_summary:type_name -> grpcapi.DBSummary
-	1, // 2: grpcapi.UserSummaryResponse.service_summmary:type_name -> grpcapi.ServiceSummary
-	2, // 3: grpcapi.AggregatorService.GetUserSummary:input_type -> grpcapi.UserSummaryRequest
-	4, // 4: grpcapi.AggregatorService.HealthCheck:input_type -> grpcapi.HealthCheckRequest
-	3, // 5: grpcapi.AggregatorService.GetUserSummary:output_type -> grpcapi.UserSummaryResponse
-	5, // 6: grpcapi.AggregatorService.HealthCheck:output_type -> grpcapi.HealthCheckResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	7, // 0: grpcapi.ServiceSummary.time:type_name -> google.protobuf.Timestamp
+	1, // 1: grpcapi.UserSummaryResponse.db_summary:type_name -> grpcapi.DBSummary
+	2, // 2: grpcapi.UserSummaryResponse.service_summmary:type_name -> grpcapi.ServiceSummary
+	0, // 3: grpcapi.HealthCheckResponse.health_db:type_name -> grpcapi.HealthDB
+	3, // 4: grpcapi.AggregatorService.GetUserSummary:input_type -> grpcapi.UserSummaryRequest
+	5, // 5: grpcapi.AggregatorService.HealthCheck:input_type -> grpcapi.HealthCheckRequest
+	4, // 6: grpcapi.AggregatorService.GetUserSummary:output_type -> grpcapi.UserSummaryResponse
+	6, // 7: grpcapi.AggregatorService.HealthCheck:output_type -> grpcapi.HealthCheckResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -411,7 +468,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_rawDesc), len(file_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

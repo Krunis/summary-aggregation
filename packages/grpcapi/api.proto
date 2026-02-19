@@ -14,6 +14,11 @@ service AggregatorService {
     rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
 }
 
+message HealthDB {
+    bool redis_health = 1;
+    bool postgres_health = 2;
+}
+
 message DBSummary{
     string id = 1;
     string light_type = 2;
@@ -41,6 +46,6 @@ message HealthCheckRequest{
 }
 
 message HealthCheckResponse{
-    string health_db = 1;
-    string health_other_service = 2;
+    HealthDB health_db = 1;
+    bool health_other_service = 2;
 }
