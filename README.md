@@ -4,9 +4,9 @@
 ![alt text](static/summary.png)
 реализована а-ля liveness probe которая проверяет живоспособность aggregator service через get запрос:
 результаты при выкл сервисах:
-![alt text](redis_unav.png)
-![alt text](postgres_unav.png)
-![alt text](both_unav.png)
+![alt text](static/redis_unav.png)
+![alt text](static/postgres_unav.png)
+![alt text](static/both_unav.png)
 
 
 
